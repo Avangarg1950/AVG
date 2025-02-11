@@ -144,6 +144,30 @@ body {
 }
 
 /* Команда */
+
+.player-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden; /* Чтобы изображение не выходило за пределы блока */
+}
+
+.player-photo {
+    max-width: 100%; /* Ограничиваем ширину изображения */
+    max-height: 200px; /* Ограничиваем высоту изображения */
+    object-fit: cover; /* Чтобы изображение сохраняло пропорции и не искажалось */
+    border-radius: 10px; /* Закругленные углы для изображения */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+.player-card h4, .player-card p {
+    margin: 5px 0; /* Отступы для текста */
+}
+
 .team-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
