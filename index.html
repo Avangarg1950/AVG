@@ -641,41 +641,44 @@ body {
         });
 
         // Geolocation API
-        document.getElementById('get-location-btn').addEventListener('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
+document.getElementById('get-location-btn').addEventListener('click', function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
 
-                        // Отображаем карту с текущим местоположением
-                        showMap(latitude, longitude);
-                    },
-                    function(error) {
-                        alert('Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.');
-                        console.error(error);
-                    }
-                );
-            } else {
-                alert('Ваш браузер не поддерживает геолокацию.');
+                // Отображаем карту с текущим местоположением
+                showMap(latitude, longitude);
+            },
+            function(error) {
+                alert('Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.');
+                console.error(error);
             }
-        });
+        );
+    } else {
+        alert('Ваш браузер не поддерживает геолокацию.');
+    }
+});
 
-        function showMap(latitude, longitude) {
-            if (window.map) {
-                window.map.remove();
-            }
+function showMap(latitude, longitude) {
+    if (window.map) {
+        window.map.remove();
+    }
 
-            window.map = L.map('map').setView([latitude, longitude], 13);
+    // Создаем карту
+    window.map = L.map('map').setView([latitude, longitude], 13);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(window.map);
+    // Добавляем слой карты OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(window.map);
 
-            L.marker([latitude, longitude]).addTo(window.map)
-                .bindPopup('Вы здесь!')
-                .openPopup();
-        }
+    // Добавляем маркер на карту
+    L.marker([latitude, longitude]).addTo(window.map)
+        .bindPopup('Вы здесь!')
+        .openPopup();
+}
     </script>
 </body>
 </html>
