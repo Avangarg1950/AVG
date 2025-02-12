@@ -138,36 +138,7 @@ body {
     transform: translateX(10px);
 }
 
-.timeline-item ul {
-    padding-left: 20px;
-    margin-top: 10px;
-}
-
 /* Команда */
-
-.player-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden; /* Чтобы изображение не выходило за пределы блока */
-}
-
-.player-photo {
-    max-width: 100%; /* Ограничиваем ширину изображения */
-    max-height: 200px; /* Ограничиваем высоту изображения */
-    object-fit: cover; /* Чтобы изображение сохраняло пропорции и не искажалось */
-    border-radius: 10px; /* Закругленные углы для изображения */
-    margin-bottom: 10px; /* Отступ снизу */
-}
-
-.player-card h4, .player-card p {
-    margin: 5px 0; /* Отступы для текста */
-}
-
 .team-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -188,6 +159,14 @@ body {
     box-shadow: 0 5px 15px rgba(255,107,1,0.2);
 }
 
+.player-photo {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
 /* Контакты */
 .contact-info {
     font-size: 1.2rem;
@@ -198,6 +177,134 @@ body {
 .contact-info i {
     margin-right: 10px;
     color: var(--primary);
+}
+
+/* FileReader API */
+#file-upload {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#file-input {
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--text);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#file-input:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#image-preview {
+    margin-top: 20px;
+}
+
+#image-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+}
+
+/* Drag and Drop API */
+#drag-drop {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#drop-zone {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed var(--primary);
+    color: var(--text);
+    padding: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#drop-zone:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ff8c42;
+}
+
+#drop-preview {
+    margin-top: 20px;
+}
+
+#drop-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+}
+
+/* Notifications API */
+#notifications {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#notify-btn {
+    background: var(--primary);
+    color: var(--text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#notify-btn:hover {
+    background: #ff8c42;
+    transform: scale(1.05);
+}
+
+/* Geolocation API */
+#geolocation {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#get-location-btn {
+    background: var(--primary);
+    color: var(--text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#get-location-btn:hover {
+    background: #ff8c42;
+    transform: scale(1.05);
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+    margin-top: 20px;
 }
 
 /* Адаптивность */

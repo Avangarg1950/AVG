@@ -4,8 +4,408 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ги Буше - Главный тренер ХК Авангард</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* CSS стили будут ниже */
+        :root {
+    --primary: #FF6B01;
+    --secondary: #000;
+    --text: #FFF;
+    --gap: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--secondary);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Навигация */
+.navbar {
+    background: rgba(0,0,0,0.95);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.logo-img {
+    height: 50px;
+    transition: transform 0.3s;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--gap);
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.nav-links a:hover {
+    background: var(--primary);
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Секции */
+.screen {
+    min-height: 100vh;
+    padding: 100px 0;
+    display: flex;
+    align-items: center;
+    scroll-snap-align: start;
+}
+
+/* Главная */
+#home {
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('arena-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+.coach-photo {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    margin: 30px auto;
+    border: 3px solid var(--primary);
+    box-shadow: 0 0 30px rgba(255,107,1,0.3);
+}
+
+/* Биография */
+.bio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    align-items: center;
+}
+
+.bio-text {
+    font-size: 1.1rem;
+    text-align: justify;
+}
+
+.bio-details {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Карьера */
+.timeline {
+    position: relative;
+    padding: 50px 0;
+}
+
+.timeline-item {
+    padding: 20px;
+    margin: 20px 0;
+    background: rgba(255,255,255,0.05);
+    border-left: 3px solid var(--primary);
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.timeline-item:hover {
+    transform: translateX(10px);
+}
+
+/* Команда */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--gap);
+    margin-top: 50px;
+}
+
+.player-card {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255,107,1,0.2);
+}
+
+.player-photo {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Контакты */
+.contact-info {
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.contact-info i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+/* FileReader API */
+#file-upload {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#file-input {
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--text);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#file-input:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#image-preview {
+    margin-top: 20px;
+}
+
+#image-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+}
+
+/* Drag and Drop API */
+#drag-drop {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#drop-zone {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed var(--primary);
+    color: var(--text);
+    padding: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#drop-zone:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ff8c42;
+}
+
+#drop-preview {
+    margin-top: 20px;
+}
+
+#drop-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+}
+
+/* Notifications API */
+#notifications {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#notify-btn {
+    background: var(--primary);
+    color: var(--text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#notify-btn:hover {
+    background: #ff8c42;
+    transform: scale(1.05);
+}
+
+/* Geolocation API */
+#geolocation {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+#get-location-btn {
+    background: var(--primary);
+    color: var(--text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#get-location-btn:hover {
+    background: #ff8c42;
+    transform: scale(1.05);
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(255, 107, 1, 0.3);
+    margin-top: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .bio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        right: -100%;
+        flex-direction: column;
+        background: var(--secondary);
+        width: 70%;
+        padding: 20px;
+        transition: right 0.3s;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .screen {
+        padding: 80px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .coach-photo {
+        max-width: 300px;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+    }
+
+    .bio-text {
+        font-size: 1rem;
+    }
+
+    .contact-info {
+        font-size: 1rem;
+    }
+}
+
+/* Анимации */
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.animate {
+    animation: slideUp 0.8s ease-out forwards;
+}
+
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s;
+}
+
+.scroll-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hover-scale {
+    transition: transform 0.3s;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -22,6 +422,11 @@
                 <li><a href="#career">Карьера</a></li>
                 <li><a href="#team">Команда</a></li>
                 <li><a href="#contact">Контакты</a></li>
+                <li><a href="#file-upload">Загрузка файлов</a></li>
+                <li><a href="#drag-drop">Drag and Drop</a></li>
+                <li><a href="#notifications">Уведомления</a></li>
+                <li><a href="#geolocation">Геолокация</a></li> 
+                
             </ul>
         </div>
     </nav>
@@ -103,7 +508,6 @@
                     <h4>Семён Чистяков</h4>
                     <p>Защитник</p>
                 </div>
-                <!-- Добавьте других игроков -->
             </div>
         </div>
     </section>
@@ -119,6 +523,40 @@
         </div>
     </section>
 
+    <section id="file-upload" class="screen">
+        <div class="container">
+            <h2>Загрузите изображение</h2>
+            <input type="file" id="file-input" accept="image/*" />
+            <div id="image-preview"></div>
+        </div>
+    </section>
+
+    <section id="drag-drop" class="screen">
+        <div class="container">
+            <h2>Перетащите изображение сюда</h2>
+            <div id="drop-zone">
+                Перетащите файл сюда
+            </div>
+            <div id="drop-preview"></div>
+        </div>
+    </section>
+
+    <section id="notifications" class="screen">
+        <div class="container">
+            <h2>Уведомления</h2>
+            <button id="notify-btn">Отправить уведомление</button>
+        </div>
+    </section>
+
+    <section id="geolocation" class="screen">
+        <div class="container">
+            <h2>Геолокация</h2>
+            <button id="get-location-btn">Получить мое местоположение</button>
+            <div id="map"></div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // Адаптивное меню
         document.querySelector('.menu-toggle').addEventListener('click', function() {
@@ -138,12 +576,106 @@
             observer.observe(el);
         });
 
-        // Закрытие меню при клике на ссылку
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.querySelector('.nav-links').classList.remove('active');
-            });
+        // FileReader API
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                document.getElementById('image-preview').appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
         });
+
+        // Drag and Drop API
+        const dropZone = document.getElementById('drop-zone');
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#f0f0f0';
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '';
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '';
+
+            const file = e.dataTransfer.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                document.getElementById('drop-preview').appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        // Notifications API
+        document.getElementById('notify-btn').addEventListener('click', function() {
+            if (Notification.permission === 'granted') {
+                new Notification('Уведомление', {
+                    body: 'Это тестовое уведомление!',
+                    icon: 'images/logo-avangard--desktop-short.svg'
+                });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        new Notification('Уведомление', {
+                            body: 'Это тестовое уведомление!',
+                            icon: 'images/logo-avangard--desktop-short.svg'
+                        });
+                    }
+                });
+            }
+        });
+
+        // Geolocation API
+        document.getElementById('get-location-btn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Отображаем карту с текущим местоположением
+                        showMap(latitude, longitude);
+                    },
+                    function(error) {
+                        alert('Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.');
+                        console.error(error);
+                    }
+                );
+            } else {
+                alert('Ваш браузер не поддерживает геолокацию.');
+            }
+        });
+
+        function showMap(latitude, longitude) {
+            if (window.map) {
+                window.map.remove();
+            }
+
+            window.map = L.map('map').setView([latitude, longitude], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(window.map);
+
+            L.marker([latitude, longitude]).addTo(window.map)
+                .bindPopup('Вы здесь!')
+                .openPopup();
+        }
     </script>
 </body>
 </html>
