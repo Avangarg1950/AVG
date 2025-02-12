@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* CSS стили будут ниже */
         :root {
     --primary: #FF6B01;
     --secondary: #000;
@@ -404,7 +403,6 @@ body {
 .hover-scale:hover {
     transform: scale(1.05);
 }
-
     </style>
 </head>
 <body>
@@ -426,7 +424,6 @@ body {
                 <li><a href="#drag-drop">Drag and Drop</a></li>
                 <li><a href="#notifications">Уведомления</a></li>
                 <li><a href="#geolocation">Геолокация</a></li> 
-                
             </ul>
         </div>
     </nav>
@@ -563,6 +560,13 @@ body {
             document.querySelector('.nav-links').classList.toggle('active');
         });
 
+        // Закрытие меню при клике на ссылку
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+
         // Анимации при скролле
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -582,10 +586,12 @@ body {
             const reader = new FileReader();
 
             reader.onload = function(e) {
+                const imagePreview = document.getElementById('image-preview');
+                imagePreview.innerHTML = ''; // Очищаем предыдущее изображение
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.style.maxWidth = '100%';
-                document.getElementById('image-preview').appendChild(img);
+                imagePreview.appendChild(img);
             };
 
             reader.readAsDataURL(file);
@@ -612,10 +618,12 @@ body {
             const reader = new FileReader();
 
             reader.onload = function(e) {
+                const dropPreview = document.getElementById('drop-preview');
+                dropPreview.innerHTML = ''; // Очищаем предыдущее изображение
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.style.maxWidth = '100%';
-                document.getElementById('drop-preview').appendChild(img);
+                dropPreview.appendChild(img);
             };
 
             reader.readAsDataURL(file);
@@ -635,50 +643,54 @@ body {
                             body: 'Это тестовое уведомление!',
                             icon: 'images/logo-avangard--desktop-short.svg'
                         });
+                    } else {
+                        alert('Уведомления заблокированы. Пожалуйста, разрешите уведомления в настройках браузера.');
                     }
                 });
+            } else {
+                alert('Уведомления заблокированы. Пожалуйста, разрешите уведомления в настройках браузера.');
             }
         });
 
         // Geolocation API
-document.getElementById('get-location-btn').addEventListener('click', function() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
+        document.getElementById('get-location-btn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
 
-                // Отображаем карту с текущим местоположением
-                showMap(latitude, longitude);
-            },
-            function(error) {
-                alert('Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.');
-                console.error(error);
+                        // Отображаем карту с текущим местоположением
+                        showMap(latitude, longitude);
+                    },
+                    function(error) {
+                        alert('Не удалось получить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.');
+                        console.error(error);
+                    }
+                );
+            } else {
+                alert('Ваш браузер не поддерживает геолокацию.');
             }
-        );
-    } else {
-        alert('Ваш браузер не поддерживает геолокацию.');
-    }
-});
+        });
 
-function showMap(latitude, longitude) {
-    if (window.map) {
-        window.map.remove();
-    }
+        function showMap(latitude, longitude) {
+            if (window.map) {
+                window.map.remove();
+            }
 
-    // Создаем карту
-    window.map = L.map('map').setView([latitude, longitude], 13);
+            // Создаем карту
+            window.map = L.map('map').setView([latitude, longitude], 13);
 
-    // Добавляем слой карты OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(window.map);
+            // Добавляем слой карты OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(window.map);
 
-    // Добавляем маркер на карту
-    L.marker([latitude, longitude]).addTo(window.map)
-        .bindPopup('Вы здесь!')
-        .openPopup();
-}
+            // Добавляем маркер на карту
+            L.marker([latitude, longitude]).addTo(window.map)
+                .bindPopup('Вы здесь!')
+                .openPopup();
+        }
     </script>
 </body>
 </html>
